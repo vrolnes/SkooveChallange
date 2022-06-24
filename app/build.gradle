@@ -54,7 +54,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation("io.coil-kt:coil-compose:2.1.0")
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.5.0-rc02")
 
     testImplementation 'junit:junit:4.13.2'
 
