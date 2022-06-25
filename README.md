@@ -1,6 +1,6 @@
 # Skoove Challenge
 
-- Run the project (Implemented and Tested on Huawei Mate 10 Pro API 29)
+- Implemented and Tested on Huawei Mate 10 Pro API 29
 
 ## Left TODO
 
