@@ -30,6 +30,12 @@ class MainViewModel : ViewModel() {
     var rightFlashState by mutableStateOf(false)
         private set
 
+    var leftForwardState by mutableStateOf(false)
+        private set
+
+    var rightForwardState by mutableStateOf(false)
+        private set
+
     var leftImage by mutableStateOf("")
         private set
     var rightImage by mutableStateOf("")
@@ -65,6 +71,7 @@ class MainViewModel : ViewModel() {
         leftAudioPlayer?.releasePlayer()
         leftAudioPlayer?.prepareAudio(wAVData[leftItemIndex])
         leftAudioPlayer?.playOrPauseAudio()
+        leftForwardState = false
     }
 
     private fun prepareRightResource() {
@@ -72,11 +79,13 @@ class MainViewModel : ViewModel() {
         rightAudioPlayer?.releasePlayer()
         rightAudioPlayer?.prepareAudio(wAVData[rightItemIndex])
         rightAudioPlayer?.playOrPauseAudio()
+        rightForwardState = false
     }
 
     fun prepareLeftPlayerTrack() {
         leftItemIndex = (leftItemIndex + 1).rem(3)
         leftAudioPlayer?.setNextTrack()
+        leftForwardState = true
     }
 
     fun prepareRightPlayerTrack() {
@@ -84,6 +93,7 @@ class MainViewModel : ViewModel() {
         if (rightItemIndex == 0)
             rightItemIndex = 3
         rightAudioPlayer?.setNextTrack()
+        rightForwardState = true
     }
 
     fun playOrPauseAudio() {

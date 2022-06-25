@@ -38,10 +38,21 @@ class MainActivity : ComponentActivity() {
                     val mtiState = mainViewModel.mtiState
                     val lefFlashState = mainViewModel.leftFlashState
                     val rightFlashState = mainViewModel.rightFlashState
+                    val lefForwardState = mainViewModel.leftForwardState
+                    val rightForwardState = mainViewModel.rightForwardState
                     val lefImage = mainViewModel.leftImage
                     val rightImage = mainViewModel.rightImage
 
-                    MainScreen(mainViewModel, mtiState, lefFlashState, rightFlashState, lefImage, rightImage)
+                    MainScreen(
+                        mainViewModel = mainViewModel,
+                        MTI = mtiState,
+                        leftForwardState = lefForwardState,
+                        rightForwardState = rightForwardState,
+                        leftFlashState = lefFlashState,
+                        rightFlashState = rightFlashState,
+                        lefImage = lefImage,
+                        rightImage = rightImage
+                    )
 
                 }
             }
@@ -57,6 +68,8 @@ class MainActivity : ComponentActivity() {
     fun MainScreen(
         mainViewModel: MainViewModel,
         MTI: String,
+        leftForwardState: Boolean,
+        rightForwardState: Boolean,
         leftFlashState: Boolean,
         rightFlashState: Boolean,
         lefImage: String,
@@ -72,7 +85,7 @@ class MainActivity : ComponentActivity() {
                 rightImage = rightImage
             )
 
-            FastForwardButtons(mainViewModel)
+            FastForwardButtons(mainViewModel, leftForwardState, rightForwardState)
 
             PlayerButtons(
                 onPlayButtonClick = { mainViewModel.playOrPauseAudio() },
@@ -106,21 +119,25 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun FastForwardButtons(mainViewModel: MainViewModel) {
+    fun FastForwardButtons(
+        mainViewModel: MainViewModel,
+        leftForwardState: Boolean,
+        rightForwardState: Boolean
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) { //Fast forward buttons layout
-            Image( //TODO inform user that next track will be played
-                painter = painterResource(id = android.R.drawable.ic_media_ff),
+            Image(
+                painter = painterResource(id = if (leftForwardState) android.R.drawable.ic_input_add else android.R.drawable.ic_media_ff),
                 contentDescription = "",
                 modifier = Modifier.clickable {
                     mainViewModel.prepareLeftPlayerTrack()
                 }
             )
             Image(
-                painter = painterResource(id = android.R.drawable.ic_media_ff),
+                painter = painterResource(id = if (rightForwardState) android.R.drawable.ic_input_add else android.R.drawable.ic_media_ff),
                 contentDescription = "",
                 modifier = Modifier.clickable {
                     mainViewModel.prepareRightPlayerTrack()
