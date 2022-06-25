@@ -17,17 +17,17 @@ class UrlPlayer(private var firstUrl: String, private var secondUrl: String) {
         // below line is use to set the audio
         // stream type for our media player.
         firstMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        secondMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        //secondMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
 
         // below line is use to set our
         // url to our media player.
         try {
             firstMediaPlayer.setDataSource(firstUrl)
-            secondMediaPlayer.setDataSource(secondUrl)
+            //secondMediaPlayer.setDataSource(secondUrl)
             // below line is use to prepare
             // and start our media player.
-            firstMediaPlayer.prepareAsync()
-            secondMediaPlayer.prepareAsync()
+            firstMediaPlayer.prepare()
+            //secondMediaPlayer.prepareAsync()
             firstMediaPlayer.isLooping = true
         } catch (e: IOException) {
             e.printStackTrace()
@@ -37,19 +37,19 @@ class UrlPlayer(private var firstUrl: String, private var secondUrl: String) {
     fun playOrPauseAudio() {
         if (!firstMediaPlayer.isPlaying) {
             firstMediaPlayer.start()
-            secondMediaPlayer.start()
+            //secondMediaPlayer.start()
         } else {
             firstMediaPlayer.pause()
-            secondMediaPlayer.pause()
+            //secondMediaPlayer.pause()
         }
     }
 
     fun resetAudio() {
         if (firstMediaPlayer.isPlaying) {
             firstMediaPlayer.pause()
-            secondMediaPlayer.pause()
+            //secondMediaPlayer.pause()
             firstMediaPlayer.seekTo(0)
-            secondMediaPlayer.seekTo(0)
+            //secondMediaPlayer.seekTo(0)
         }
     }
 

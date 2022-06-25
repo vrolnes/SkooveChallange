@@ -4,6 +4,7 @@ package com.example.skoovechallange
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.*
@@ -19,34 +20,58 @@ import androidx.compose.ui.unit.dp
 import com.example.skoovechallange.data.Constants
 import com.example.skoovechallange.ui.components.ImageView
 import com.example.skoovechallange.ui.theme.SkooveChallangeTheme
+import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mainViewModel: MainViewModel by viewModels()
+        mainViewModel.prepareAudio(Constants.aOneWAV, Constants.bOneWAV)
         setContent {
             SkooveChallangeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    MainScreen()
+                    val mtiState = mainViewModel.mtiState
+                    val lefFlashState = mainViewModel.leftFlashState
+                    val rightFlashState = mainViewModel.rightFlashState
+                    MainScreen(mainViewModel, mtiState, lefFlashState, rightFlashState)
                 }
+            }
+            BackHandler(enabled = true) {
+                // If yes, run the fancy new function to end the app and
+                //  remove it from the task list.
+                android.os.Process.killProcess(android.os.Process.myPid())
+                exitProcess(1)
             }
         }
     }
 
     @Composable
-    fun MainScreen() {
-        val mainViewModel: MainViewModel by viewModels()
-        val MTIstate = mainViewModel.MTIState
-        mainViewModel.prepareAudio(Constants.aOneWAV,Constants.bOneWAV)
-        Column(modifier = Modifier.fillMaxSize().background(Color.Gray)) { //Main Layout
+    fun MainScreen(
+        mainViewModel: MainViewModel,
+        MTI: String,
+        leftFlashState: Boolean,
+        rightFlashState: Boolean
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray)
+        ) { //Main Layout
             ImagesLayout(
                 leftImage = Constants.aOneJPG,
                 rightImage = Constants.bOneJPG
             )
             FastForwardButtons()
-            PlayerButtons(onPlayButtonClick = { mainViewModel.playOrPauseAudio() }, onPlayButtonLongClick = { mainViewModel.resetAudio() }, MTIstate)
+            PlayerButtons(
+                onPlayButtonClick = { mainViewModel.playOrPauseAudio() },
+                onPlayButtonLongClick = { mainViewModel.resetAudio() },
+                MTI,
+                leftFlashState,
+                rightFlashState
+            )
         }
     }
 
@@ -92,7 +117,13 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun PlayerButtons(onPlayButtonClick: () -> Unit, onPlayButtonLongClick: () -> Unit, MTI: String) {
+    fun PlayerButtons(
+        onPlayButtonClick: () -> Unit,
+        onPlayButtonLongClick: () -> Unit,
+        MTI: String,
+        leftFlash: Boolean,
+        rightFlash: Boolean
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -107,16 +138,19 @@ class MainActivity : ComponentActivity() {
                 Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_slideshow),
                     contentDescription = "",
-                    Modifier.combinedClickable(onClick = onPlayButtonClick, onLongClick = onPlayButtonLongClick)
+                    Modifier.combinedClickable(
+                        onClick = onPlayButtonClick,
+                        onLongClick = onPlayButtonLongClick
+                    )
                 )
                 Text(text = MTI)
             }
             Image(
-                painter = painterResource(id = android.R.drawable.presence_online),
+                painter = painterResource(id = if (leftFlash) android.R.drawable.presence_online else android.R.drawable.presence_invisible),
                 contentDescription = ""
             )
             Image(
-                painter = painterResource(id = android.R.drawable.presence_invisible),
+                painter = painterResource(id = if (rightFlash) android.R.drawable.presence_online else android.R.drawable.presence_invisible),
                 contentDescription = ""
             )
         }
