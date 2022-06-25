@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.skoovechallange.data.Constants
 import com.example.skoovechallange.ui.components.ImageView
 import com.example.skoovechallange.ui.theme.SkooveChallangeTheme
 import kotlin.system.exitProcess
@@ -26,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mainViewModel: MainViewModel by viewModels()
-        mainViewModel.prepareAudio(Constants.aOneWAV, Constants.bOneWAV)
+        mainViewModel.prepareAudio()
         setContent {
             SkooveChallangeTheme {
                 // A surface container using the 'background' color from the theme
@@ -36,7 +35,9 @@ class MainActivity : ComponentActivity() {
                     val mtiState = mainViewModel.mtiState
                     val lefFlashState = mainViewModel.leftFlashState
                     val rightFlashState = mainViewModel.rightFlashState
-                    MainScreen(mainViewModel, mtiState, lefFlashState, rightFlashState)
+                    val lefImage = mainViewModel.leftImage
+                    val rightImage = mainViewModel.rightImage
+                    MainScreen(mainViewModel, mtiState, lefFlashState, rightFlashState, lefImage, rightImage)
                 }
             }
             BackHandler(enabled = true) {
@@ -53,7 +54,9 @@ class MainActivity : ComponentActivity() {
         mainViewModel: MainViewModel,
         MTI: String,
         leftFlashState: Boolean,
-        rightFlashState: Boolean
+        rightFlashState: Boolean,
+        lefImage: String,
+        rightImage: String
     ) {
         Column(
             modifier = Modifier
@@ -61,10 +64,10 @@ class MainActivity : ComponentActivity() {
                 .background(Color.Gray)
         ) { //Main Layout
             ImagesLayout(
-                leftImage = Constants.aOneJPG,
-                rightImage = Constants.bOneJPG
+                leftImage = lefImage,
+                rightImage = rightImage
             )
-            FastForwardButtons()
+            FastForwardButtons(mainViewModel)
             PlayerButtons(
                 onPlayButtonClick = { mainViewModel.playOrPauseAudio() },
                 onPlayButtonLongClick = { mainViewModel.resetAudio() },
@@ -97,7 +100,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun FastForwardButtons() {
+    fun FastForwardButtons(mainViewModel: MainViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -105,11 +108,17 @@ class MainActivity : ComponentActivity() {
         ) { //Fast forward buttons layout
             Image(
                 painter = painterResource(id = android.R.drawable.ic_media_ff),
-                contentDescription = ""
+                contentDescription = "",
+                modifier = Modifier.clickable {
+                    mainViewModel.prepareLeftPlayerTrack()
+                }
             )
             Image(
                 painter = painterResource(id = android.R.drawable.ic_media_ff),
-                contentDescription = ""
+                contentDescription = "",
+                modifier = Modifier.clickable {
+                    mainViewModel.prepareRightPlayerTrack()
+                }
             )
 
         }
