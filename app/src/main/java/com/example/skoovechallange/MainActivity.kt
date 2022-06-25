@@ -24,25 +24,29 @@ import kotlin.system.exitProcess
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val mainViewModel: MainViewModel by viewModels()
-        mainViewModel.prepareAudio()
+        mainViewModel.prepareAudio() //TODO Keep sync while changing tracks
+
         setContent {
             SkooveChallangeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
+                    //mutable state values to update UI
                     val mtiState = mainViewModel.mtiState
                     val lefFlashState = mainViewModel.leftFlashState
                     val rightFlashState = mainViewModel.rightFlashState
                     val lefImage = mainViewModel.leftImage
                     val rightImage = mainViewModel.rightImage
+
                     MainScreen(mainViewModel, mtiState, lefFlashState, rightFlashState, lefImage, rightImage)
+
                 }
             }
             BackHandler(enabled = true) {
-                // If yes, run the fancy new function to end the app and
-                //  remove it from the task list.
+                // remove it from the task list.
                 android.os.Process.killProcess(android.os.Process.myPid())
                 exitProcess(1)
             }
@@ -67,7 +71,9 @@ class MainActivity : ComponentActivity() {
                 leftImage = lefImage,
                 rightImage = rightImage
             )
+
             FastForwardButtons(mainViewModel)
+
             PlayerButtons(
                 onPlayButtonClick = { mainViewModel.playOrPauseAudio() },
                 onPlayButtonLongClick = { mainViewModel.resetAudio() },
@@ -86,7 +92,7 @@ class MainActivity : ComponentActivity() {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Box {
+            Box { //TODO Add current playheads with a vertical bar.
                 ImageView(
                     imageUrl = leftImage
                 )
@@ -106,7 +112,7 @@ class MainActivity : ComponentActivity() {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) { //Fast forward buttons layout
-            Image(
+            Image( //TODO inform user that next track will be played
                 painter = painterResource(id = android.R.drawable.ic_media_ff),
                 contentDescription = "",
                 modifier = Modifier.clickable {
@@ -139,7 +145,7 @@ class MainActivity : ComponentActivity() {
             horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) { // Player buttons layout
-            Image(
+            Image( //TODO implement Microloops
                 painter = painterResource(id = android.R.drawable.stat_notify_sync_noanim),
                 contentDescription = ""
             )
