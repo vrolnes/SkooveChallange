@@ -38,14 +38,15 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
         val mainViewModel: MainViewModel by viewModels()
+        val MTIstate = mainViewModel.MTIState
         mainViewModel.prepareAudio(Constants.aOneWAV,Constants.bOneWAV)
-        Column(modifier = Modifier.fillMaxSize()) { //Main Layout
+        Column(modifier = Modifier.fillMaxSize().background(Color.Gray)) { //Main Layout
             ImagesLayout(
                 leftImage = Constants.aOneJPG,
                 rightImage = Constants.bOneJPG
             )
             FastForwardButtons()
-            PlayerButtons(onPlayButtonClick = { mainViewModel.playOrPauseAudio() }, onPlayButtonLongClick = { mainViewModel.resetAudio() })
+            PlayerButtons(onPlayButtonClick = { mainViewModel.playOrPauseAudio() }, onPlayButtonLongClick = { mainViewModel.resetAudio() }, MTIstate)
         }
     }
 
@@ -54,7 +55,6 @@ class MainActivity : ComponentActivity() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Blue)
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -75,8 +75,7 @@ class MainActivity : ComponentActivity() {
     fun FastForwardButtons() {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Gray),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) { //Fast forward buttons layout
             Image(
@@ -91,12 +90,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun PlayerButtons(onPlayButtonClick: () -> Unit, onPlayButtonLongClick: () -> Unit) {
+    fun PlayerButtons(onPlayButtonClick: () -> Unit, onPlayButtonLongClick: () -> Unit, MTI: String) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Red),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) { // Player buttons layout
@@ -110,7 +109,7 @@ class MainActivity : ComponentActivity() {
                     contentDescription = "",
                     Modifier.combinedClickable(onClick = onPlayButtonClick, onLongClick = onPlayButtonLongClick)
                 )
-                Text(text = "2:3:1")
+                Text(text = MTI)
             }
             Image(
                 painter = painterResource(id = android.R.drawable.presence_online),

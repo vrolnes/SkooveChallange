@@ -28,6 +28,7 @@ class UrlPlayer(private var firstUrl: String, private var secondUrl: String) {
             // and start our media player.
             firstMediaPlayer.prepareAsync()
             secondMediaPlayer.prepareAsync()
+            firstMediaPlayer.isLooping = true
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -51,4 +52,8 @@ class UrlPlayer(private var firstUrl: String, private var secondUrl: String) {
             secondMediaPlayer.seekTo(0)
         }
     }
+
+    fun getSecond(): Int = firstMediaPlayer.currentPosition / 1000
+
+    fun isPlaying() = firstMediaPlayer.isPlaying
 }
