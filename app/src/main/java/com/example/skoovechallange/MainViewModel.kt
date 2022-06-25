@@ -14,7 +14,6 @@ class MainViewModel : ViewModel() {
     private var leftAudioPlayer: UrlPlayer? = null
     private var rightAudioPlayer: UrlPlayer? = null
 
-    private var firstRun = true
     private var leftItemIndex = 0
     private var rightItemIndex = 3
 
@@ -43,26 +42,24 @@ class MainViewModel : ViewModel() {
 
     private var currentSecond = 0
 
-    fun prepareAudio() {
+    fun prepareAudio() { //prepare audio and images for first run
         leftAudioPlayer = UrlPlayer {
-            prepareLeftResource()
+            prepareLeftResource() //on finish playing callback
         }
         leftAudioPlayer?.prepareAudio(wAVData[leftItemIndex])
         leftImage = imageData[leftItemIndex]
 
         rightAudioPlayer = UrlPlayer {
-            prepareRightResource()
+            prepareRightResource() //on finish playing callback
         }
 
         rightAudioPlayer?.prepareAudio(wAVData[rightItemIndex])
         rightImage = imageData[rightItemIndex]
 
-        if (firstRun) {
-            calculateMTI()
-            setLeftFlash()
-            setRightFlash()
-            firstRun = false
-        }
+        calculateMTI()
+        setLeftFlash()
+        setRightFlash()
+
 
     }
 
